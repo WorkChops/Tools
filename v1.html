@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WorkChops — Toolbox: Séquence • Dés • Minuteur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Poppins:wght@400;600;700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --muted:#4b5563;
+      --brand:#2563eb;
+      --brand-2:#3b82f6;
+      --accent:#f59e0b;
+      --danger:#dc2626;
+      --glass: rgba(255,255,255,0.6);
+      --radius:12px;
+      --shadow: 0 8px 30px rgba(15,23,42,0.08);
+      --mono: 'Roboto Mono', monospace;
+      --ui: 'Poppins', sans-serif;
+      --title: 'Inter', sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:var(--ui);background:linear-gradient(180deg,var(--bg),#e5ecf7);color:#111827;display:flex;align-items:flex-start;justify-content:center;padding:28px;
+    }
+
+    .shell{width:100%;max-width:1100px}
+    header.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{display:flex;flex-direction:column;line-height:1}
+    .logo .big{font-family:var(--title);font-size:20px;font-weight:900;color:#111827}
+    .logo .small{font-size:12px;color:var(--muted);margin-top:3px}
+
+    nav.tabs{display:flex;gap:8px}
+    .tab{background:transparent;border:1px solid #d1d5db;padding:8px 14px;border-radius:999px;font-weight:700;cursor:pointer;color:#374151}
+    .tab[aria-pressed="true"]{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 18px rgba(37,99,235,0.25)}
+
+    main.grid{display:grid;grid-template-columns:360px 1fr;gap:20px}
+
+    aside.panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .panel h3{margin:0 0 8px 0;font-size:15px;color:#1f2937}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+
+    .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);color:#111827}
+
+    /* ============ SECTIONS ============ */
+    .section{display:none}
+    .section.active{display:block}
+
+    /* ---- SEQUENCE UI ---- */
+    .seq-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .field{display:flex;flex-direction:column}
+    label{font-size:13px;font-weight:700;margin-bottom:6px;color:#1f2937}
+    input[type=number],select{padding:10px;border-radius:10px;border:1px solid #d1d5db;font-size:14px;color:#111827;background:#fff}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 18px rgba(37,99,235,0.18)}
+    .btn.ghost{background:#f9fafb;border:1px solid #d1d5db;color:#374151}
+
+    .sequence-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:18px}
+    .digit{min-width:64px;min-height:84px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:34px;color:#111827;border:2px solid #d1d5db}
+
+    /* ---- DICE UI ---- */
+    .scene-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .scene{perspective:900px;display:flex;gap:12px}
+    .dice{width:96px;height:96px;position:relative;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(.22,.9,.35,1)}
+    .face{position:absolute;width:100%;height:100%;background:#f9fafb;border-radius:10px;border:1px solid #d1d5db;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 18px rgba(2,6,23,0.08);backface-visibility:hidden;padding:12px;box-sizing:border-box}
+    .dot{width:18px;height:18px;background:#111827;border-radius:50%}
+    .dice .dots{display:flex;flex-wrap:wrap;gap:6px;width:100%;height:100%;align-content:center;justify-content:center}
+
+    .dice-controls{display:flex;flex-direction:column;gap:8px}
+    .result{font-weight:800;color:#111827}
+
+    /* ---- TIMER UI ---- */
+    .timer-display{font-family:var(--mono);font-size:56px;text-align:center;padding:18px;border-radius:12px;border:1px solid #d1d5db;background:#f9fafb;color:#111827}
+    .presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .preset{padding:8px 12px;border-radius:999px;border:1px solid #d1d5db;background:#f3f4f6;cursor:pointer;font-weight:700;color:#1f2937}
+    .controls-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .small-muted{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+    /* responsive */
+    @media (max-width:880px){main.grid{grid-template-columns:1fr;}}
+    @media (max-width:520px){.sequence-grid .digit{min-width:54px;min-height:70px;font-size:28px}}
+  </style>
+</head>
+<body>
+  <!-- contenu identique au précédent -->
+</body>
+</html>
