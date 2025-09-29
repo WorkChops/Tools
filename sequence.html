@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Séquence - Work Chops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #f4f6f8;
+            --main-color: #4A4A4A;
+            --accent-color: #4A90E2;
+            --white-color: #FFFFFF;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-family: 'Inter', sans-serif;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--main-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: var(--white-color);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+        }
+        .logo .work {
+            color: var(--main-color);
+        }
+        .logo .chops {
+            color: var(--accent-color);
+        }
+        .sequence-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .digit-box {
+            width: 80px;
+            height: 110px;
+            background-color: #eef1f5;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--main-color);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .control-group label {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .control-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dde2e8;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            box-sizing: border-box;
+        }
+        .action-button {
+            background: linear-gradient(45deg, #4A90E2, #75C5FF);
+            color: var(--white-color);
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+         .copy-button {
+            background-color: #eef1f5;
+            color: #555;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+        }
+        .copy-button:hover {
+            background-color: #dde2e8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo"><span class="work">Work</span><span class="chops">Chops</span></h1>
+            <h2>Générateur de Séquence</h2>
+        </div>
+
+        <div class="sequence-display" id="sequenceDisplay">
+            <!-- Les cases pour les chiffres seront générées ici -->
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="numDigits">Nombre de chiffres</label>
+                <input type="number" id="numDigits" value="3" min="1" max="10">
+            </div>
+            <div class="control-group">
+                <label for="minNum">Valeur Min</label>
+                <input type="number" id="minNum" value="1">
+            </div>
+            <div class="control-group">
+                <label for="maxNum">Valeur Max</label>
+                <input type="number" id="maxNum" value="9">
+            </div>
+        </div>
+
+        <button class="action-button" id="generateBtn">Générer la Séquence</button>
+        <button class="copy-button" id="copyBtn" style="display: none;">Copier la séquence</button>
+    </div>
+
+    <script>
+        const numDigitsInput = document.getElementById('numDigits');
+        const minNumInput = document.getElementById('minNum');
+        const maxNumInput = document.getElementById('maxNum');
+        const generateBtn = document.getElementById('generateBtn');
+        const sequenceDisplay = document.getElementById('sequenceDisplay');
+        const copyBtn = document.getElementById('copyBtn');
+        let currentSequence = [];
+
+        function createDigitBoxes() {
+            const numDigits = parseInt(numDigitsInput.value, 10);
+            sequenceDisplay.innerHTML = '';
+            for (let i = 0; i < numDigits; i++) {
+                const box = document.createElement('div');
+                box.classList.add('digit-box');
+                box.textContent = '-';
+                sequenceDisplay.appendChild(box);
+            }
+             copyBtn.style.display = 'none';
+        }
+        
+        // Nouvelle fonction pour générer une séquence SANS doublons
+        function generateUniqueSequence() {
+            const numDigits = parseInt(numDigitsInput.value, 10);
+            const min = parseInt(minNumInput.value, 10);
+            const max = parseInt(maxNumInput.value, 10);
+            const boxes = sequenceDisplay.querySelectorAll('.digit-box');
+            
+            // Vérification importante: il doit y avoir assez de nombres uniques disponibles
+            const rangeSize = max - min + 1;
+            if (numDigits > rangeSize) {
+                alert("Erreur : Le nombre de chiffres demandés est supérieur au nombre de valeurs uniques possibles dans l'intervalle.");
+                return;
+            }
+
+            // 1. Créer une "réserve" de tous les nombres possibles
+            let pool = [];
+            for (let i = min; i <= max; i++) {
+                pool.push(i);
+            }
+
+            // 2. Mélanger cette réserve (algorithme de Fisher-Yates)
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+
+            // 3. Sélectionner les premiers nombres de la réserve mélangée
+            currentSequence = pool.slice(0, numDigits);
+
+            // Animation et affichage
+            boxes.forEach((box, index) => {
+                let iteration = 0;
+                const interval = setInterval(() => {
+                    box.textContent = Math.floor(Math.random() * 10);
+                    iteration++;
+                    if (iteration > 10 + index * 2) {
+                        clearInterval(interval);
+                        box.textContent = currentSequence[index];
+                    }
+                }, 50);
+            });
+            copyBtn.style.display = 'inline-block';
+            copyBtn.textContent = 'Copier la séquence';
+        }
+
+        numDigitsInput.addEventListener('input', createDigitBoxes);
+        generateBtn.addEventListener('click', generateUniqueSequence);
+        
+        copyBtn.addEventListener('click', () => {
+            if(currentSequence.length > 0) {
+                 const sequenceString = currentSequence.join(' - ');
+                 
+                 // Utilise une astuce pour copier sans dépendre de l'API Clipboard
+                 const textarea = document.createElement('textarea');
+                 textarea.value = sequenceString;
+                 document.body.appendChild(textarea);
+                 textarea.select();
+                 document.execCommand('copy');
+                 document.body.removeChild(textarea);
+
+                 copyBtn.textContent = 'Copié !';
+            }
+        });
+
+        // Initialisation
+        createDigitBoxes();
+    </script>
+</body>
+</html>
+
