@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio de Production - Cahier des Charges 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cinematic Noir -->
+    <!-- Application Structure Plan: The SPA is now structured as a "Production Studio" dashboard. The cinematic, dark-themed UI enhances user immersion. The core functionality remains a filterable grid of project cards, now styled as "production slates," which open detailed modals. The removal of charts simplifies the interface, focusing entirely on the core task: finding and understanding creative missions. This thematic structure is more engaging for design students and aligns with the "cinema universe" goal. -->
+    <!-- Visualization & Content Choices: 
+        - Overall Structure (Report Info -> Project structure & deliverables): Presented via a thematic dashboard layout (HTML/Tailwind) with a dark, cinematic UI. Interaction: filtering and card clicks. Justification: Creates an immersive and engaging experience tailored to the student audience.
+        - Deliverables Section (Report Info -> Video deliverables): Goal: Inform. Presentation: Styled "briefing cards" (HTML/CSS) with thematic icons (🎞️, ✨). The personal project is reframed as "Votre Publicité" for better engagement. Justification: Clearly and thematically communicates the final goals.
+        - Group/Student Missions (Report Info -> All qualitative text): Goal: Inform. Presentation: Styled text blocks within a dark-themed modal. Interaction: Revealed on card click. Justification: Hides detailed information by default, allowing users to drill down into their specific "production brief."
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #121212;
+            color: #EAEAEA;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .text-gold { color: #D4AF37; }
+        .bg-card { background-color: #1E1E1E; }
+        .border-card { border-color: #333333; }
+        .border-gold { border-color: #D4AF37; }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .card-hover {
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            border: 1px solid #333333;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1E1E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #444444;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+        input::placeholder {
+            color: #888;
+        }
+        select {
+            color: #EAEAEA;
+        }
+        option {
+            background-color: #1E1E1E;
+            color: #EAEAEA;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="app-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <header class="text-center mb-16">
+            <h1 class="text-5xl sm:text-7xl font-bold text-white tracking-wider">STUDIO DE PRODUCTION</h1>
+            <div class="mt-4 text-lg text-gold uppercase tracking-[0.2em]">Cahier des Charges 3D</div>
+        </header>
+
+        <section id="deliverables" class="mb-16 bg-card/50 p-6 rounded-2xl border border-card">
+            <h2 class="text-3xl font-semibold text-gold mb-6 text-center">Les Livrables</h2>
+            <div class="flex flex-col md:flex-row justify-center items-stretch gap-8 text-center">
+                <div class="flex-1 bg-card p-8 rounded-xl border border-card">
+                    <span class="text-6xl">🎞️</span>
+                    <h3 class="text-2xl font-bold text-white mt-4 mb-2">Film de Projet de Groupe</h3>
+                    <p class="text-gray-400"><strong class="font-semibold text-gold">Durée :</strong> 90 à 120 secondes</p>
+                    <p class="text-sm text-gray-500 mt-3">Racontez l'histoire de votre univers. La vidéo doit présenter l'espace complet et démontrer la synergie de vos créations.</p>
+                </div>
+                <div class="flex-1 bg-card p-8 rounded-xl border border-card">
+                    <span class="text-6xl">✨</span>
+                    <h3 class="text-2xl font-bold text-white mt-4 mb-2">Votre Publicité (Spot 20-30s)</h3>
+                    <p class="text-gray-400"><strong class="font-semibold text-gold">Durée :</strong> 20 à 30 secondes</p>
+                    <p class="text-sm text-gray-500 mt-3">C'est votre carte de visite. Mettez en valeur votre modélisation sous son meilleur jour, en soulignant les détails et votre savoir-faire.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2 class="text-3xl font-semibold text-gold mb-8 text-center">Les Productions en Cours</h2>
+            <div class="sticky top-0 z-10 bg-[#121212]/80 backdrop-blur-md py-4 mb-8 rounded-xl">
+                <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                    <div class="relative w-full sm:w-auto">
+                         <select id="class-filter" class="w-full sm:w-48 appearance-none bg-card border border-card rounded-lg py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-card focus:border-gold">
+                            <option value="all">Toutes les classes</option>
+                            <option value="A">Classe A</option>
+                            <option value="B">Classe B</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                    <input type="text" id="student-search" placeholder="Trouver un réalisateur..." class="w-full sm:w-64 bg-card border border-card rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-card focus:border-gold">
+                </div>
+            </div>
+
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            </div>
+        </section>
+    </div>
+
+    <div id="project-modal" class="modal invisible opacity-0 fixed inset-0 w-full h-full z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
+        <div class="modal-content transform -translate-y-10 bg-card w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col border border-card">
+            <div class="p-6 border-b border-card flex justify-between items-center">
+                <h2 id="modal-title" class="text-2xl font-bold text-gold"></h2>
+                <button id="modal-close" class="text-gray-500 hover:text-white text-4xl">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectData = [
+            {
+                id: 1,
+                name: "The Nexus: Multi-Verse Library",
+                mission: "Créez un sanctuaire immersif pour les fans de fiction. Chaque zone thématique doit transporter le visiteur dans son univers favori grâce à un design (architecture, mobilier, lumière) qui raconte une histoire.",
+                students: [
+                    { name: "Rayane", class: "B", mission: "Le Trône de la Marionnettiste : Modélisez un fauteuil de lecture sculptural pour la zone Manwha. Ce doit être une œuvre d'art évoquant pouvoir et élégance, qui invite à l'immersion." },
+                    { name: "Erudice", class: "B", mission: "Le Sanctuaire Otaku : Imaginez un système de lecture modulaire sous forme d'alcôves ou de cocons personnalisés, où chaque niche est dédiée à une série culte." },
+                    { name: "Pascal", class: "A", mission: "La Station de Gaming Immersive : Intégrez un setup de jeu complet dans une bibliothèque, en soignant la gestion des câbles, l'éclairage et les supports pour figurines." },
+                    { name: "Jennifer", class: "B", mission: "La Porte des Mondes : Concevez l'entrée principale du Nexus. Qu'il s'agisse d'une arche ou d'une bibliothèque-portail, sa structure doit suggérer le passage entre les univers." }
+                ]
+            },
+            {
+                id: 2,
+                name: "Fourth Gen Studio",
+                mission: "Imaginez un laboratoire créatif où les outils physiques et les œuvres numériques fusionnent. L'espace doit être modulable et inspirant, avec une architecture qui participe elle-même au processus de création.",
+                students: [
+                    { name: "Achabys", class: "B", mission: "L'Installation Cinétique Murale : Au-delà d'un simple mur, il s'agit de créer une surface \"vivante\". Les panneaux rotatifs doivent permettre de jouer avec la lumière et la texture, transformant une projection 3D statique en une expérience dynamique et interactive." },
+                    { name: "Rolyx", class: "A", mission: "Le Poste de Rendu \"Think Outside the Box\" : Concevoir le poste de travail ultime pour un artiste numérique, en alliant une ergonomie parfaite à une esthétique futuriste et audacieuse." },
+                    { name: "Duamel", class: "B", mission: "Le Mur d'Inspiration Modulable : Imaginer un système qui permette d'afficher et d'organiser le chaos créatif. Il doit être à la fois fonctionnel (magnétique, modulable) et esthétique, devenant une composition artistique en soi, qui évolue au fil des projets." },
+                    { name: "Lois", class: "B", mission: "L'Autel des Sens : Modéliser les éléments qui créent l'atmosphère. Le diffuseur de parfum ne doit pas être un simple objet, mais une sculpture. Le système d'éclairage doit permettre de sculpter l'espace pour mettre en valeur le sujet photographié." }
+                ]
+            },
+            {
+                id: 3,
+                name: "The Blockbuster Factory",
+                mission: "L'enjeu de ce projet est la transformation. Votre mission est de concevoir un espace caméléon, capable de changer radicalement d'ambiance en un temps record. La modularité, l'ingéniosité et la polyvalence du mobilier sont les clés du succès.",
+                students: [
+                    { name: "Iris", class: "A", mission: "Le Bar de Toretto : Plus qu'un bar, c'est un symbole. Il doit être robuste, fonctionnel et mobile. Son design industriel doit évoquer la mécanique et la vitesse, tout en étant une pièce centrale charismatique pour n'importe quelle scène de film." },
+                    { name: "Noriane", class: "A", mission: "La Loge de Star \"PDG\" : Concevoir l'espace où la transformation opère avant la scène. Le luxe, la fonctionnalité et la technologie sont primordiaux. Le miroir, l'éclairage, les rangements... tout doit être pensé pour un confort optimal et une efficacité professionnelle." },
+                    { name: "Lindsay", class: "B", mission: "Le Salon Modulable : Créer un ensemble de meubles (canapés, tables) qui sont de véritables \"briques de Lego\" pour un réalisateur. Faciles à déplacer, à reconfigurer, ils doivent permettre de créer une multitude d'ambiances différentes avec un minimum d'éléments." },
+                    { name: "Kassandra", class: "A", mission: "La Cuisine de \"Bricoleuse\" : Modéliser une cuisine qui soit belle à l'écran et pratique en coulisses. Chaque élément doit être pensé pour être filmé sous tous les angles, tout en étant fonctionnel et facilement adaptable à différents scénarios." }
+                ]
+            },
+            {
+                id: 4,
+                name: "The Power Suit Office",
+                mission: "Votre mission est de matérialiser le pouvoir, l'ambition et l'élégance dans un environnement de travail. Chaque meuble et chaque matériau doit respirer le succès et la confiance. Concevez une véritable déclaration de statut, un espace conçu pour prendre des décisions qui changent la donne.",
+                students: [
+                    { name: "Ghintia", class: "B", mission: "Le Bureau de l'Associé Principal : Concevoir la pièce maîtresse, le bureau qui impose le respect. Le choix des matériaux nobles est crucial, tout comme le design, qui doit être à la fois massif et élégant, classique mais avec une touche de modernité." },
+                    { name: "Gloria", class: "A", mission: "La Salle du Conseil d'Administration : Imaginer la table autour de laquelle se joue l'avenir. Elle doit être imposante, mais aussi favoriser la communication. La technologie (connectique, écrans) doit y être intégrée de manière invisible et intuitive." },
+                    { name: "Vianney", class: "B", mission: "Le Bureau Exécutif Augmenté : Dépasser le concept de bureau traditionnel. Il s'agit d'un poste de contrôle personnel, où le design intègre la technologie de manière fluide. Les surfaces tactiles, les rangements secrets, tout doit contribuer à une impression de puissance et d'efficacité absolue." },
+                    { name: "Ian", class: "A", mission: "La Bibliothèque Juridique Murale : Concevoir une bibliothèque qui soit un mur de savoir et de prestige. Elle n'est pas juste un rangement, mais un élément architectural qui structure l'espace et assoit l'autorité intellectuelle du lieu." }
+                ]
+            },
+            {
+                id: 5,
+                name: "The Street Food Arena",
+                mission: "Votre objectif est de capturer l'énergie brute de la rue et de la canaliser dans un lieu vibrant et électrique. Pensez cet espace comme un festival permanent où le design industriel, fonctionnel et un peu rebelle sert de scène à la culture urbaine et culinaire.",
+                students: [
+                    { name: "Tryphose", class: "B", mission: "Le Totem Urbain : Bar & DJ Booth : C'est le cœur battant de l'arène. Cette structure doit être visible de loin, un point de ralliement. Sa conception (inspiration container, échafaudage) doit être brute et intelligente, combinant la fonction de bar et de scène pour le DJ qui met l'ambiance." },
+                    { name: "Sarah", class: "A", mission: "Le Stand de Pâtisserie Urbaine : Imaginer un kiosque ou food truck qui soit une explosion de créativité. Il doit être attractif, hyper-fonctionnel dans un espace réduit, et son design doit refléter la modernité et l'audace des créations culinaires qu'il propose." },
+                    { name: "Grâce", class: "B", mission: "La Cuisine de Battle Ouverte : Concevoir le \"ring\" où s'affrontent les chefs. L'ergonomie et l'efficacité sont essentielles. Chaque plan de travail, chaque rangement, chaque équipement doit être pensé pour la performance sous pression, tout en offrant un spectacle au public." },
+                    { name: "Stessy", class: "A", mission: "La Scène DJ / Événementiel : Modéliser l'espace de l'animateur, celui qui commente l'action. Même si elle est petite, cette scène doit avoir un impact visuel fort et être équipée pour mettre en valeur le DJ et le présentateur qui chauffent la foule." }
+                ]
+            },
+            {
+                id: 6,
+                name: "The Oasis: Detox & Design",
+                mission: "Concevez une expérience de déconnexion totale à travers le design. Ce spa futuriste doit être un lieu épuré et surprenant, où la technologie est utilisée pour amplifier les sensations et apaiser l'esprit. Chaque détail doit contribuer à créer une bulle hors du temps.",
+                students: [
+                    { name: "Brunelle", class: "B", mission: "La Chaise Longue 'Nail Art' Sculpturale : Imaginez une chaise longue non pas comme un meuble, mais comme une sculpture sur laquelle on peut se reposer. L'inspiration de l'onglerie doit se traduire par des formes fluides, des courbes élégantes et une finition laquée parfaite." },
+                    { name: "Myra", class: "B", mission: "Le Mini-Booth de Coiffure Interactif : Concevez un espace privatif et luxueux pour la coiffure et le maquillage. Votre mission est de dessiner l'architecture du booth, en intégrant un miroir interactif comme pièce centrale. Pensez au mobilier (fauteuil, rangements) et à l'éclairage pour créer une expérience exclusive." },
+                    { name: "Émeraude", class: "A", mission: "Le Hammam Scénographique : Concevoir un hammam où la chaleur et la vapeur sont complétées par une expérience lumineuse et sonore. L'éclairage doit être programmable pour créer des ambiances immersives (forêt tropicale, aurore boréale...) qui évoluent pendant la séance." },
+                    { name: "Esther", class: "B", mission: "La Salle de Repos Dystopique : Aménagez un cocon de méditation où des projections à 360° transforment l'espace en un paysage mental apaisant, offrant une évasion visuelle." }
+                ]
+            },
+            {
+                id: 7,
+                name: "The Lore Lodge",
+                mission: "Votre défi est de créer des chambres qui racontent une histoire immersive. Le client ne doit pas simplement occuper une chambre, il doit habiter un univers. Chaque objet, du lit au balcon, doit être un chapitre de ce récit qui rend l'expérience inoubliable.",
+                students: [
+                    { name: "Elicia", class: "B", mission: "Le Lit Signature : Le lit est le cœur de la chambre. Sa structure et sa tête de lit doivent être une déclaration forte, évoquant immédiatement l'univers choisi (la rigueur des murs de SNK, la chaleur d'une case africaine, etc.) tout en restant un objet de confort." },
+                    { name: "Faghez", class: "B", mission: "Le Dressing Thématique : Concevoir un espace de rangement qui soit une extension de l'univers de la chambre. Au lieu de portes classiques, on peut imaginer des systèmes d'ouverture, des matériaux ou des motifs qui rappellent l'inspiration choisie (les sangles de SNK, des motifs tribaux, etc.)." },
+                    { name: "Loan", class: "A", mission: "L'Ouverture sur le Monde : Imaginer un balcon ou une fenêtre qui soit aussi une fenêtre sur l'imaginaire. L'intégration de VFX doit permettre d'augmenter la réalité, de projeter des éléments de l'univers choisi sur la vue, créant une expérience magique." },
+                    { name: "Lydia", class: "A", mission: "L'Assise Principale : Créer le canapé ou les fauteuils du coin salon. Ces pièces doivent être à la fois confortables et sculpturales, utilisant des formes, des textures et des couleurs qui ancrent immédiatement le visiteur dans le thème de la chambre." }
+                ]
+            },
+            {
+                id: 8,
+                name: "The Mind Retreat",
+                mission: "Votre objectif est de concevoir un refuge pour l'esprit, un lieu de reconnexion avec soi-même et la nature. L'architecture doit être humble et au service du bien-être, en privilégiant la lumière naturelle, les matériaux bruts et la vue sur l'extérieur.",
+                students: [
+                    { name: "Coralie", class: "B", mission: "La Bibliothèque Personnalisée : Au-delà du rangement, cette bibliothèque doit être une invitation à la découverte. Imaginez un système où l'éclairage met en valeur certains livres, ou des modules qui peuvent se reconfigurer pour créer des assises de lecture." },
+                    { name: "Ruth A.", class: "B", mission: "Le Chevalet de Peinture face à la Mer : Créer l'espace de création ultime pour un peintre. Il doit être minimaliste pour ne pas distraire, mais chaque élément (chevalet, siège, rangement pour le matériel) doit être pensé comme un bel objet fonctionnel, en parfaite harmonie avec le paysage." },
+                    { name: "Jessica", class: "A", mission: "Le Mur Végétal Intérieur/Extérieur : Concevoir une transition douce entre l'intérieur et l'extérieur. Le mur végétal ne doit pas être juste un décor, mais un écosystème qui semble entrer dans la pièce, renforçant le sentiment de communion avec la nature." },
+                    { name: "Ronelle", class: "A", mission: "Le Lit-Nid de Lecture : Imaginer le lit non pas comme un meuble pour dormir, mais comme un cocon pour s'évader. Confortable, enveloppant, avec un éclairage intégré et des rangements pour les livres, il doit être le refuge parfait pour des heures de lecture." },
+                    { name: "Marie T.", class: "A", mission: "La Scène de Création : Concevoir une table basse qui soit un mini-atelier. Elle doit offrir une surface de travail inspirante pour des activités manuelles (bijoux) et être pensée avec un éclairage spécifique qui la transforme en un point focal créatif dans la pièce." }
+                ]
+            },
+            {
+                id: 9,
+                name: "Sème City Open Park (SCOP)",
+                mission: "Ce projet a un impact réel. Votre mission est de proposer une vision qui transforme un espace public en un lieu de vie plus agréable, fonctionnel et esthétique. Chaque élément doit être pensé pour l'usage des citoyens, la durabilité et l'identité de la ville.",
+                students: [
+                    { name: "Ashley", class: "B", mission: "La Toiture Dansante & Intelligente : Créer une structure qui offre de l'ombre tout en étant une sculpture. Le défi est de concevoir des formes organiques qui sont non seulement belles, mais aussi fonctionnelles, en intégrant un système de récupération d'eau qui irrigue les plantes alentour." },
+                    { name: "Korel", class: "A", mission: "L'Abri Urbain Modulaire : Concevoir des abris qui soient plus que de simples toits. Ils doivent être des points de rencontre, des espaces de repos confortables et sécurisants, dont le design moderne et modulable peut s'adapter à différents endroits du parc." },
+                    { name: "Lidwine", class: "A", mission: "Le Mobilier Institutionnel : Imaginez des bancs, des poubelles, des bornes d'information qui ne soient pas juste fonctionnels, mais qui participent à l'identité visuelle du parc. Le design doit être robuste, ergonomique et porter une signature esthétique forte." },
+                    { name: "Shaneen", class: "A", mission: "L'Aire de Jeux \"Kawaii\" : Créer une aire de jeux qui stimule l'imagination et la sécurité. L'esthétique \"Kawaii\" doit se traduire par des formes douces, des couleurs vives et des structures de jeu qui sont à la fois amusantes, originales et conformes aux normes de sécurité." }
+                ]
+            },
+            {
+                id: 10,
+                name: "The Kinetic Stage",
+                mission: "Pensez ce studio comme une scène de théâtre pour la création. L'espace doit se métamorphoser selon les besoins (shooting, atelier, showroom). Le mobilier est mobile, transformable et se déploie pour s'adapter à chaque projet créatif.",
+                students: [
+                    { name: "Zirwath", class: "B", mission: "Le portant à vêtements sculptural : Réinventez le portant pour qu'il soit une pièce de design qui les met en valeur. Sa mobilité et sa modularité sont essentielles." },
+                    { name: "Aubine", class: "A", mission: "Le miroir sur pied \"filaire\" : Concevez un miroir léger et poétique, inspiré de vos tableaux filaires, avec une structure fine, élégante et facile à déplacer." },
+                    { name: "Maëlys", class: "A", mission: "La table de création \"rustique minimaliste\" : Imaginez une grande table de travail en matériaux bruts, conçue intelligemment pour pouvoir se diviser en plusieurs postes indépendants." },
+                    { name: "Tiffany (Boni)", class: "A", mission: "Le salon d'accueil modulable : Créez un ensemble de sièges pour l'accueil qui puisse se reconfigurer facilement, passant d'une zone d'attente à un espace de brainstorming." },
+                    { name: "Roxane", class: "A", mission: "La Station d'Écoute Rétro-Kinetic : Concevez un meuble qui cache et révèle une platine vinyle. Le défi est de modéliser le mécanisme d'ouverture, alliant bois rétro et mouvement cinétique." }
+                ]
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectsGrid = document.getElementById('projects-grid');
+            const classFilter = document.getElementById('class-filter');
+            const studentSearch = document.getElementById('student-search');
+            const modal = document.getElementById('project-modal');
+            const modalClose = document.getElementById('modal-close');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            const renderProjects = (filteredProjects) => {
+                projectsGrid.innerHTML = '';
+                const searchValue = studentSearch.value.toLowerCase().trim();
+
+                if (filteredProjects.length === 0) {
+                    projectsGrid.innerHTML = `<p class="text-center text-gray-500 col-span-full">Aucune production ne correspond à votre recherche.</p>`;
+                    return;
+                }
+                filteredProjects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'bg-card p-6 rounded-2xl cursor-pointer card-hover';
+                    projectCard.dataset.projectId = project.id;
+                    
+                    const memberCount = project.students.length;
+
+                    let searchResultHtml = '';
+                    if (searchValue) {
+                        const matchingStudents = project.students
+                            .filter(student => student.name.toLowerCase().includes(searchValue))
+                            .map(student => student.name);
+
+                        if (matchingStudents.length > 0) {
+                            searchResultHtml = `
+                                <div class="mt-4 pt-4 border-t border-card">
+                                    <p class="text-xs text-gray-400">Résultat pour : <span class="font-semibold text-gold">${matchingStudents.join(', ')}</span></p>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    projectCard.innerHTML = `
+                        <h3 class="text-2xl font-bold text-white mb-2">${project.name}</h3>
+                        <p class="text-sm text-gray-400 mb-4 h-12 overflow-hidden">${project.mission}</p>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-gray-300">${memberCount} réalisateur${memberCount > 1 ? 's' : ''}</span>
+                            <span class="text-gold font-medium">Consulter le Brief →</span>
+                        </div>
+                        ${searchResultHtml}
+                    `;
+                    projectsGrid.appendChild(projectCard);
+                });
+            };
+
+            const filterAndRender = () => {
+                const classValue = classFilter.value;
+                const searchValue = studentSearch.value.toLowerCase().trim();
+                
+                let filteredData = projectData.filter(project => {
+                    const studentsInClass = project.students.some(student => classValue === 'all' || student.class === classValue);
+                    const studentMatchesSearch = project.students.some(student => student.name.toLowerCase().includes(searchValue));
+                    
+                    if (searchValue) {
+                        return studentMatchesSearch && studentsInClass;
+                    }
+                    return studentsInClass;
+                });
+                
+                renderProjects(filteredData);
+            };
+
+            const openModal = (projectId) => {
+                const project = projectData.find(p => p.id == projectId);
+                if (!project) return;
+                
+                modalTitle.textContent = project.name;
+                
+                let studentsHtml = project.students.map(student => `
+                    <div class="py-4 border-b border-card last:border-b-0">
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-lg text-white">${student.name}</p>
+                            <span class="text-sm font-medium ${student.class === 'A' ? 'bg-red-900/50 text-red-300' : 'bg-blue-900/50 text-blue-300'} py-1 px-3 rounded-full">Classe ${student.class}</span>
+                        </div>
+                        <p class="text-gray-400 mt-2">${student.mission}</p>
+                    </div>
+                `).join('');
+
+                modalBody.innerHTML = `
+                    <p class="text-base text-gray-300 mb-6 pb-6 border-b border-card"><strong>Brief du Film :</strong> ${project.mission}</p>
+                    <h4 class="text-xl font-semibold text-gold mb-4">Missions des Réalisateurs</h4>
+                    <div>${studentsHtml}</div>
+                `;
+                
+                modal.classList.remove('invisible', 'opacity-0');
+                modal.querySelector('.modal-content').classList.remove('-translate-y-10');
+            };
+
+            const closeModal = () => {
+                modal.classList.add('invisible', 'opacity-0');
+                modal.querySelector('.modal-content').classList.add('-translate-y-10');
+            };
+
+            projectsGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('[data-project-id]');
+                if (card) {
+                    openModal(card.dataset.projectId);
+                }
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            classFilter.addEventListener('change', filterAndRender);
+            studentSearch.addEventListener('input', filterAndRender);
+
+            renderProjects(projectData);
+        });
+    </script>
+</body>
+</html>
